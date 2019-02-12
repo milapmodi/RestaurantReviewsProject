@@ -3,6 +3,7 @@ let restaurants,
   cuisines
 var newMap
 var markers = []
+var elementIndex = 0;
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -113,6 +114,7 @@ updateRestaurants = () => {
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
+  
 
   DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
     if (error) { // Got an error!
@@ -156,6 +158,11 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+  if(elementIndex != 0){
+    elementIndex = elementIndex+1;
+  }
+    
+
   const li = document.createElement('li');
 
   const image = document.createElement('img');
@@ -178,6 +185,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.tabIndex  = elementIndex;
   li.append(more)
 
   return li
@@ -208,4 +216,8 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 } */
-
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+           .register('js/services-worker.js')
+           .then(function() { console.log('Service Worker Registered'); });
+}
